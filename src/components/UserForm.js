@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import EditUserForm from './EditUserForm';
+import "../App"
 
 const UserForm = (props) => {
   const {color} = props;
@@ -7,7 +9,7 @@ const UserForm = (props) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [users, setUsers] = useState([]);
-
+  
   useEffect(() => {
     const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
     setUsers(storedUsers);
@@ -38,23 +40,27 @@ const UserForm = (props) => {
     setFirstName(editedUser.firstName);
     setLastName(editedUser.lastName);
     handleDeleteUser(id);
+    
   };
-
+ 
   return (
-    <div>
-      <form>
-        <label>
+
+    <div style={{ width: "30rem" }}>
+      
+      <form  style={{borderRadius: '25px'}}>
+        <label className="h4">
           First Name:
-          <input style={{ color }} type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+          <input className="FormC" style={{ color }} type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
         </label>
-        <label>
+        <label className="h4">
           Last Name:
-          <input style={{ color }} type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+          <input className="FormC" style={{ color }} type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
         </label>
         <button type="button" className='btn btn-warning text-white m-1' onClick={handleAddUser}>Add User</button>
       </form>
       <h2>Users:</h2>
       <ul>
+      {/* <EditComponent users={users} handleEditUser={handleEditUser} handleDeleteUser={handleDeleteUser} /> */}
         {users.map(user => (
           <li key={user.id} style={{ color }}>
             {user.firstName} {user.lastName}
@@ -63,10 +69,15 @@ const UserForm = (props) => {
           </li>
           
         ))}
-        
+        <EditUserForm users={users} handleEditUser={handleEditUser} handleDeleteUser={handleDeleteUser} />
+       
       </ul>
     </div>
   );
 };
 
 export default UserForm;
+
+
+
+
