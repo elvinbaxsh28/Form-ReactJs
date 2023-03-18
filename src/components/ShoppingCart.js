@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import UserForm from '../components/UserForm';
+import ColorSelector from './ColorSelector';
+import { Modal } from 'react-bootstrap';
 
 
 
@@ -25,7 +27,16 @@ const ShoppingCart = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [color, setColor] = useState('#ccc')
+  const [showModal, setShowModal] = useState(false);
   
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const addItem = () => {
     setItems([...items, { name, price, quantity }]);
@@ -70,6 +81,7 @@ const ShoppingCart = () => {
     0
   );
 
+
   return (
     <div>
         <UserForm color={color}/>
@@ -93,7 +105,7 @@ const ShoppingCart = () => {
         <tbody >
           {items.map((item, index) => (
             <tr key={index}>
-              <td style={{ color }}>{item.name} {item.name}</td>
+              <td style={{ color }}>{item.name} </td>
               <td style={{ color }}>${item.price.toFixed(2)}</td>
               <td>
                 <button onClick={() => decreaseQuantity(index)}>-</button>
@@ -114,6 +126,25 @@ const ShoppingCart = () => {
       <p>Total Price: ${totalPrice.toFixed(2)}</p>
       <div>
         <p>Selected Date: {selectedDate.toLocaleDateString()}</p>
+    </div>
+
+    <div>
+    <button onClick={handleShowModal}>Open</button>
+    <Modal show={showModal} onHide={handleCloseModal}>
+<Modal.Header closeButton>
+<Modal.Title>Edit User</Modal.Title>
+</Modal.Header>
+<Modal.Body>
+          <ColorSelector/>
+</Modal.Body>
+
+
+<Modal.Footer>
+<button onClick={handleCloseModal}>Close</button>
+<button onClick={handleCloseModal}>Save</button>
+
+</Modal.Footer>
+</Modal>
     </div>
     </div>
   );
