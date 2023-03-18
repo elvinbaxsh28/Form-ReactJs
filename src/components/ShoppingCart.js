@@ -4,6 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import UserForm from '../components/UserForm';
 import ColorSelector from './ColorSelector';
 import { Modal } from 'react-bootstrap';
+import Swal from 'sweetalert2'
 
 
 
@@ -26,7 +27,7 @@ const ShoppingCart = () => {
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [color, setColor] = useState('#ccc')
+  const [color, setColor] = useState('#100')
   const [showModal, setShowModal] = useState(false);
   
 
@@ -39,6 +40,16 @@ const ShoppingCart = () => {
   };
 
   const addItem = () => {
+    if (name.trim() === "") {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Bos saxlamaq olmaz!',
+        footer: '<a href="">Why do I have this issue?</a>'
+      })
+      return;
+
+  }
     setItems([...items, { name, price, quantity }]);
     setName('');
     setPrice(0);

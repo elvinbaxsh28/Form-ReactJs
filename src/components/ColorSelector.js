@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from "react";
+import './modal.css';
+
 
 const colors = [
     {
@@ -62,7 +64,7 @@ const ColorSelector = () => {
     }
 
     return (
-        <div>
+        <div className="colorDivs">
             {colors.map(color => (
                 <button
                     key={color.name}
@@ -102,6 +104,8 @@ const ColorSelector = () => {
                     <button onClick={() => deleteDiv(index)}>Delete</button>
                 </div>
             ))}
+
+            
         </div>
     );
 };

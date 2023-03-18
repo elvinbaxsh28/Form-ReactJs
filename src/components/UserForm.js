@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Modal, Button, Form} from 'react-bootstrap';
+import Swal from 'sweetalert2'
 import "../App"
 
 const UserForm = (props) => {
@@ -22,6 +23,19 @@ const UserForm = (props) => {
     }, []);
 
     const handleAddUser = () => {
+      if (firstName.trim() === "" || lastName.trim() === "") {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Bos saxlamaq olmaz!',
+          footer: '<a href="">Why do I have this issue?</a>'
+        })
+        return;
+     
+    }
+
+    
+
         const newUser = {
             firstName,
             lastName,
@@ -86,7 +100,7 @@ const UserForm = (props) => {
 
             <form style={{
                 borderRadius: '25px'
-            }}>
+            }}  >
                 <label className="h4">
                     First Name:
                     <input
@@ -124,7 +138,7 @@ const UserForm = (props) => {
                     </div>
                 ))}
             </div>
-            <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal show={showModal} onHide={handleCloseModal} >
                 <Modal.Header closeButton>
                     <Modal.Title>Edit User</Modal.Title>
                 </Modal.Header>
