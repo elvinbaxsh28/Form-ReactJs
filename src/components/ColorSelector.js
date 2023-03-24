@@ -1,113 +1,178 @@
-import React, {useState, useEffect} from "react";
-import './modal.css';
-
+import React, { useRef, useState, useEffect } from "react";
+import "./modal.css";
+import Swal from "sweetalert2";
 
 const colors = [
-    {
-        name: "Red",
-        color: "#ff0000"
-    }, {
-        name: "Blue",
-        color: "#0000ff"
-    }, {
-        name: "Green",
-        color: "#00ff00"
-    }, {
-        name: "Yellow",
-        color: "#ffff00"
-    }, {
-        name: "Purple",
-        color: "#800080"
-    }
+  {
+    name: "Blue",
+    color: "#0000ff",
+  },
+  {
+    name: "Red",
+    color: "#ff0000",
+  },
+
+  {
+    name: "Green",
+    color: "#00ff00",
+  },
+  {
+    name: "Yellow",
+    color: "#ffff00",
+  },
+  {
+    name: "Purple",
+    color: "#800080",
+  },
+  {
+    name: "Orange",
+    color: "#ff8e03",
+  },
 ];
 
 const ColorSelector = () => {
-    const [selectedColor,
-        setSelectedColor] = useState(null);
-    const [text,
-        setText] = useState("");
-    const [divs,
-        setDivs] = useState([]);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [text, setText] = useState("");
+  const [divs, setDivs] = useState([]);
+  const inputRef = useRef(null);
+  const [editingIndex, setEditingIndex] = useState(null);
 
-    useEffect(() => {
-        const storedDivs = JSON.parse(localStorage.getItem("divs"));
-        if (storedDivs) {
-            setDivs(storedDivs);
-        }
-    }, []);
+  // useEffect(() => {
+  //   if (inputRef.current) {
+  //     inputRef.current.focus();
+  //   }
+  // }, []);
 
-    useEffect(() => {
-        localStorage.setItem("divs", JSON.stringify(divs));
-    }, [divs]);
+  useEffect(() => {
+    const storedDivs = JSON.parse(localStorage.getItem("divs"));
+    if (storedDivs) {
+      setDivs(storedDivs);
+    }
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
-    const createNewDiv = () => {
-        if (!selectedColor) 
-            return;
-        
-        const newDiv = {
-            backgroundColor: selectedColor,
-            text: text
-        };
+  useEffect(() => {
+    localStorage.setItem("divs", JSON.stringify(divs));
+  }, [divs]);
 
-        setDivs([
-            ...divs,
-            newDiv
-        ]);
-        setText("");
-        setSelectedColor(null);
-    };
-
-    const deleteDiv = (index) => {
-        const updatedDivs = [...divs];
-        updatedDivs.splice(index, 1);
-        setDivs(updatedDivs);
+  const createNewDiv = () => {
+    if (!selectedColor || !text) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Text ve Reng daxil edin",
+      });
+      return;
     }
 
-    return (
-        <div className="colorDivs">
-            {colors.map(color => (
-                <button
-                    key={color.name}
-                    style={{
-                    backgroundColor: color.color
-                }}
-                    onClick={() => setSelectedColor(color.color)}>
-                    {color.name}
-                </button>
-            ))}
-            <input
-                type="color"
-                value={text}
-                onChange={e => setSelectedColor(e.target.value)}
-                style={{
-                backgroundColor: selectedColor
-            }}></input>
-            <input
-                type="text"
-                value={text}
-                onChange={e => setText(e.target.value)}
-                style={{
-                backgroundColor: selectedColor
-            }}/>
+    const newDiv = {
+      backgroundColor: selectedColor,
+      text: text,
+    };
 
-            <button onClick={createNewDiv}>Create Div</button>
+    if (editingIndex === null) {
+      const updatedDivs = [...divs, newDiv];
+      setDivs(updatedDivs);
+      localStorage.setItem("divs", JSON.stringify(updatedDivs));
+    } else {
+      const updatedDivs = [...divs];
+      updatedDivs[editingIndex] = newDiv;
+      setDivs(updatedDivs);
+      localStorage.setItem("divs", JSON.stringify(updatedDivs));
+      setEditingIndex(null);
+    }
 
-            {divs.map((div, index) => (
-                <div
-                    key={index}
-                    style={{
-                    backgroundColor: div.backgroundColor,
-                    padding: "10px",
-                    marginBottom: "10px"
-                }}>
-                    {div.text}
-                    <button onClick={() => deleteDiv(index)}>Delete</button>
-                </div>
-            ))}
+    setText("");
+    setSelectedColor(null);
 
-            
+  };
+
+  const editDiv = (index) => {
+    const divToEdit = divs[index];
+    setSelectedColor(divToEdit.backgroundColor);
+    setText(divToEdit.text);
+    setEditingIndex(index);
+  };
+
+  const deleteDiv = (index) => {
+    const updatedDivs = [...divs];
+    updatedDivs.splice(index, 1);
+    setDivs(updatedDivs);
+  };
+
+  return (
+    <div className="colorDivs">
+      {colors.map((color) => (
+        <button
+          key={color.name}
+          className="m-2 w-25 rounded"
+          style={{
+            backgroundColor: color.color,
+          }}
+          onClick={() => setSelectedColor(color.color)}
+        >
+          {color.name}
+        </button>
+      ))}
+      <input
+        type="color"
+        className="ms-2 w-25 rounded"
+        value={text}
+        onChange={(e) => setSelectedColor(e.target.value)}
+        style={{
+          backgroundColor: selectedColor,
+        }}
+      ></input>
+
+      <input
+        type="text"
+        value={text}
+        ref={inputRef}
+        className="rounded m-2 w-50"
+        placeholder="Enter Title"
+        onChange={(e) => setText(e.target.value)}
+        style={{
+          backgroundColor: selectedColor,
+        }}
+      />
+
+      <button className="rounded m-2 btn btn-success" onClick={createNewDiv}>
+        Add Title
+      </button>
+
+      {divs.map((div, index) => (
+        <div
+          key={index}
+          className="rounded my-2 d-flex  justify-content-between align-items-center"
+          style={{
+            backgroundColor: div.backgroundColor,
+            padding: "5px",
+            color: "white",
+          }}
+        >
+
+          <h4 className="ms-1">{div.text}</h4>
+
+          <p className="mt-3">
+            <button
+              className="rounded btn btn-dark"
+              onClick={() => editDiv(index)}
+            >
+              Update
+            </button>
+            <button
+              className="rounded btn btn-dark mx-1"
+              onClick={() => deleteDiv(index)}
+            >
+              Remove
+            </button>
+          </p>
         </div>
-    );
+      ))}
+    </div>
+  );
 };
 
 export default ColorSelector;

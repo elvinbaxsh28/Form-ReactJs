@@ -20,11 +20,11 @@ const MyComponent = () => {
         <div>
             <button onClick={handleShowModal} className="button-87 d-grid gap-2">Add User</button>
 
-            <Modal  show={showModal} onHide={handleCloseModal} className="my-modal">
+            <Modal  show={showModal} onHide={handleCloseModal} className="my-modal" >
                 <Modal.Header closeButton>
                     <Modal.Title className="my-modal-title">Add User</Modal.Title>
                 </Modal.Header>
-                <Modal.Body className="my-modal-body">
+                <Modal.Body className="my-modal-body" style={{backgroundColor:'lightblue'}}>
                     <ShoppingCart/>
                 </Modal.Body>
                 <Modal.Footer>
